@@ -13,6 +13,7 @@ from kivy.clock import Clock
 from kivymd.uix.scrollview import MDScrollView
 from kivy.uix.widget import Widget
 from kivymd.uix.selectioncontrol import MDCheckbox
+from kivymd.uix.menu import MDDropdownMenu
 
 class InputScreen(MDScreen):
     sexe = StringProperty('Homme')
@@ -23,26 +24,40 @@ class InputScreen(MDScreen):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.simulation_options = {'vite': False, 'endormi': False, 'danse': False}
-        self.layout = MDBoxLayout(orientation='vertical', spacing=20, padding=20, size_hint_y=None)
+        self.poids = ''
+        self.layout = MDBoxLayout(orientation='vertical', spacing=24, padding=20, size_hint_y=None)
         self.layout.bind(minimum_height=self.layout.setter('height'))
         scroll = MDScrollView()
         scroll.add_widget(self.layout)
         self.add_widget(scroll)
+        # Titre général
+        self.layout.add_widget(MDLabel(
+            text='Nouvelle session',
+            font_style='H4',
+            halign='center',
+            size_hint_y=None,
+            height=64
+        ))
+        self.layout.add_widget(Widget(size_hint_y=None, height=16))
         self._build_profil()
+        self.layout.add_widget(Widget(size_hint_y=None, height=20))
         self._build_simulation()
+        self.layout.add_widget(Widget(size_hint_y=None, height=20))
         self._build_conso()
+        self.layout.add_widget(Widget(size_hint_y=None, height=20))
         self._build_conso_list()
+        self.layout.add_widget(Widget(size_hint_y=None, height=20))
         self._build_calculer_btn()
 
     def _build_profil(self):
-        card = MDCard(orientation='vertical', padding=20, spacing=10, size_hint=(1, None))
+        card = MDCard(orientation='vertical', padding=20, spacing=10, size_hint=(1, None), size_hint_y=None, md_bg_color=(0.18, 0.22, 0.28, 1))
         box = MDBoxLayout(orientation='vertical', spacing=10, size_hint_y=None)
         box.bind(minimum_height=box.setter('height'))
-        box.add_widget(MDLabel(text='Profil utilisateur', font_style='H5', halign='center', size_hint_y=None, height=56))
+        box.add_widget(MDLabel(text='Profil utilisateur', font_style='H5', halign='center', size_hint_y=None, height=56, theme_text_color='Custom', text_color=(1,1,1,1)))
         box.add_widget(Widget(size_hint_y=None, height=8))
         # Sexe
         row_sexe = MDBoxLayout(orientation='horizontal', spacing=10, size_hint_y=None, height=48)
-        row_sexe.add_widget(MDLabel(text='Sexe :', font_style='Subtitle1', halign='right', size_hint_x=0.4))
+        row_sexe.add_widget(MDLabel(text='Sexe :', font_style='Subtitle1', halign='right', size_hint_x=0.4, theme_text_color='Custom', text_color=(1,1,1,1)))
         self.sexe_segment = MDSegmentedControl(size_hint_x=0.6, height=40)
         self.sexe_homme = MDSegmentedControlItem(text='Homme')
         self.sexe_femme = MDSegmentedControlItem(text='Femme')
@@ -54,13 +69,14 @@ class InputScreen(MDScreen):
         box.add_widget(row_sexe)
         # Poids
         row_poids = MDBoxLayout(orientation='horizontal', spacing=10, size_hint_y=None, height=48)
-        row_poids.add_widget(MDLabel(text='Poids (kg) :', font_style='Subtitle1', halign='right', size_hint_x=0.4))
+        row_poids.add_widget(MDLabel(text='Poids (kg) :', font_style='Subtitle1', halign='right', size_hint_x=0.4, theme_text_color='Custom', text_color=(1,1,1,1)))
         self.poids_input = MDTextField(input_filter='float', hint_text='Poids en kg', mode='rectangle', size_hint_x=0.6)
+        self.poids_input.bind(text=lambda instance, value: setattr(self, 'poids', value))
         row_poids.add_widget(self.poids_input)
         box.add_widget(row_poids)
         # À jeun
         row_jeun = MDBoxLayout(orientation='horizontal', spacing=10, size_hint_y=None, height=48)
-        row_jeun.add_widget(MDLabel(text='À jeun :', font_style='Subtitle1', halign='right', size_hint_x=0.4))
+        row_jeun.add_widget(MDLabel(text='À jeun :', font_style='Subtitle1', halign='right', size_hint_x=0.4, theme_text_color='Custom', text_color=(1,1,1,1)))
         self.jeun_segment = MDSegmentedControl(size_hint_x=0.6, height=40)
         self.jeun_oui = MDSegmentedControlItem(text='Oui')
         self.jeun_non = MDSegmentedControlItem(text='Non')
@@ -72,49 +88,46 @@ class InputScreen(MDScreen):
         box.add_widget(row_jeun)
         card.add_widget(box)
         self.layout.add_widget(card)
-        self.layout.add_widget(Widget(size_hint_y=None, height=12))
 
     def _build_simulation(self):
-        card = MDCard(orientation='vertical', padding=20, spacing=10, size_hint=(1, None))
+        card = MDCard(orientation='vertical', padding=20, spacing=10, size_hint=(1, None), size_hint_y=None, md_bg_color=(0.28, 0.22, 0.18, 1))
         box = MDBoxLayout(orientation='vertical', spacing=10, size_hint_y=None)
         box.bind(minimum_height=box.setter('height'))
-        box.add_widget(MDLabel(text='Mode Simulation', font_style='H5', halign='center', size_hint_y=None, height=56))
+        box.add_widget(MDLabel(text='Mode Simulation', font_style='H5', halign='center', size_hint_y=None, height=56, theme_text_color='Custom', text_color=(1,1,1,1)))
         box.add_widget(Widget(size_hint_y=None, height=8))
         # Option 1
         row1 = MDBoxLayout(orientation='horizontal', spacing=10, size_hint_y=None, height=48)
         cb1 = MDCheckbox(active=False)
         cb1.bind(active=lambda instance, value: self._set_sim_option('vite', value))
         row1.add_widget(cb1)
-        row1.add_widget(MDLabel(text="J’ai bu vite", halign='left', size_hint_x=1, text_size=(None, 40), shorten=False, max_lines=2))
+        row1.add_widget(MDLabel(text="J’ai bu vite", halign='left', size_hint_x=1, size_hint_y=None, height=48, theme_text_color='Custom', text_color=(1,1,1,1)))
         box.add_widget(row1)
         # Option 2
         row2 = MDBoxLayout(orientation='horizontal', spacing=10, size_hint_y=None, height=48)
         cb2 = MDCheckbox(active=False)
         cb2.bind(active=lambda instance, value: self._set_sim_option('endormi', value))
         row2.add_widget(cb2)
-        row2.add_widget(MDLabel(text="Je me suis endormi", halign='left', size_hint_x=1, text_size=(None, 40), shorten=False, max_lines=2))
+        row2.add_widget(MDLabel(text="Je me suis endormi", halign='left', size_hint_x=1, size_hint_y=None, height=48, theme_text_color='Custom', text_color=(1,1,1,1)))
         box.add_widget(row2)
         # Option 3
         row3 = MDBoxLayout(orientation='horizontal', spacing=10, size_hint_y=None, height=48)
         cb3 = MDCheckbox(active=False)
         cb3.bind(active=lambda instance, value: self._set_sim_option('danse', value))
         row3.add_widget(cb3)
-        row3.add_widget(MDLabel(text="J’ai dansé", halign='left', size_hint_x=1, text_size=(None, 40), shorten=False, max_lines=2))
+        row3.add_widget(MDLabel(text="J’ai dansé", halign='left', size_hint_x=1, size_hint_y=None, height=48, theme_text_color='Custom', text_color=(1,1,1,1)))
         box.add_widget(row3)
         card.add_widget(box)
         self.layout.add_widget(card)
-        self.layout.add_widget(Widget(size_hint_y=None, height=12))
 
     def _build_conso(self):
-        from kivymd.uix.menu import MDDropdownMenu
-        card = MDCard(orientation='vertical', padding=20, spacing=10, size_hint=(1, None))
+        card = MDCard(orientation='vertical', padding=20, spacing=10, size_hint=(1, None), size_hint_y=None, md_bg_color=(0.18, 0.28, 0.22, 1))
         box = MDBoxLayout(orientation='vertical', spacing=10, size_hint_y=None)
         box.bind(minimum_height=box.setter('height'))
-        box.add_widget(MDLabel(text='Ajouter une consommation', font_style='H5', halign='center', size_hint_y=None, height=56))
+        box.add_widget(MDLabel(text='Ajouter une consommation', font_style='H5', halign='center', size_hint_y=None, height=56, theme_text_color='Custom', text_color=(1,1,1,1)))
         box.add_widget(Widget(size_hint_y=None, height=8))
         # Type d'alcool
         row_type = MDBoxLayout(orientation='horizontal', spacing=10, size_hint_y=None, height=48)
-        row_type.add_widget(MDLabel(text="Type d'alcool", font_style="Subtitle1", size_hint_x=0.4))
+        row_type.add_widget(MDLabel(text="Type d'alcool", font_style="Subtitle1", size_hint_x=0.4, theme_text_color='Custom', text_color=(1,1,1,1)))
         self.type_menu_items = [
             {"viewclass": "OneLineListItem", "text": t, "on_release": lambda x=t: self._set_type(x)}
             for t in ['Bière', 'Vin', 'Spiritueux']
@@ -125,13 +138,13 @@ class InputScreen(MDScreen):
         box.add_widget(row_type)
         # Volume
         row_vol = MDBoxLayout(orientation='horizontal', spacing=10, size_hint_y=None, height=48)
-        row_vol.add_widget(MDLabel(text="Volume (cl)", font_style="Subtitle1", size_hint_x=0.4))
+        row_vol.add_widget(MDLabel(text="Volume (cl)", font_style="Subtitle1", size_hint_x=0.4, theme_text_color='Custom', text_color=(1,1,1,1)))
         self.volume_input = MDTextField(input_filter='float', hint_text='ex: 25', mode='rectangle', size_hint_x=0.5)
         row_vol.add_widget(self.volume_input)
         box.add_widget(row_vol)
         # Heure
         row_heure = MDBoxLayout(orientation='horizontal', spacing=10, size_hint_y=None, height=48)
-        row_heure.add_widget(MDLabel(text="Heure (HH:MM)", font_style="Subtitle1", size_hint_x=0.4))
+        row_heure.add_widget(MDLabel(text="Heure (HH:MM)", font_style="Subtitle1", size_hint_x=0.4, theme_text_color='Custom', text_color=(1,1,1,1)))
         self.heure_input = MDTextField(hint_text='ex: 22:30', mode='rectangle', size_hint_x=0.5)
         row_heure.add_widget(self.heure_input)
         box.add_widget(row_heure)
@@ -149,18 +162,23 @@ class InputScreen(MDScreen):
         box.add_widget(row_btn)
         card.add_widget(box)
         self.layout.add_widget(card)
-        self.layout.add_widget(Widget(size_hint_y=None, height=12))
 
     def _build_conso_list(self):
-        # Limiter la hauteur de la carte
-        self.liste_card = MDCard(orientation='vertical', padding=10, size_hint=(1, None), height=120)
+        card = MDCard(orientation='vertical', padding=20, spacing=10, size_hint=(1, None), size_hint_y=None, md_bg_color=(0.22, 0.18, 0.28, 1))
+        box = MDBoxLayout(orientation='vertical', spacing=10, size_hint_y=None)
+        box.bind(minimum_height=box.setter('height'))
+        box.add_widget(MDLabel(text='Consommations', font_style='H5', halign='center', size_hint_y=None, height=56, theme_text_color='Custom', text_color=(1,1,1,1)))
+        box.add_widget(Widget(size_hint_y=None, height=8))
+        # Liste scrollable limitée en hauteur
+        from kivymd.uix.list import OneLineListItem
+        from kivymd.uix.scrollview import MDScrollView
+        scroll = MDScrollView(size_hint=(1, None), height=200)
         self.liste_box = MDBoxLayout(orientation='vertical', size_hint_y=None)
         self.liste_box.bind(minimum_height=self.liste_box.setter('height'))
-        self._refresh_conso_list()
-        scroll = MDScrollView(size_hint=(1, 1))
         scroll.add_widget(self.liste_box)
-        self.liste_card.add_widget(scroll)
-        self.layout.add_widget(self.liste_card)
+        box.add_widget(scroll)
+        card.add_widget(box)
+        self.layout.add_widget(card)
 
     def _refresh_conso_list(self, *args):
         self.liste_box.clear_widgets()
@@ -172,8 +190,18 @@ class InputScreen(MDScreen):
                 self.liste_box.add_widget(OneLineListItem(text=txt, size_hint_y=None, height=40))
 
     def _build_calculer_btn(self):
-        self.calculer_btn = MDRectangleFlatButton(text='Calculer', pos_hint={'center_x':0.5}, font_size=22, on_release=self._on_calculer)
-        self.layout.add_widget(self.calculer_btn)
+        from kivymd.uix.button import MDRaisedButton
+        btn = MDRaisedButton(
+            text='Calculer',
+            md_bg_color=(0.2, 0.6, 1, 1),
+            text_color=(1, 1, 1, 1),
+            elevation=4,
+            size_hint=(1, None),
+            height=56,
+            pos_hint={'center_x': 0.5},
+            on_release=self._on_calculer
+        )
+        self.layout.add_widget(btn)
 
     def _set_sim_option(self, key, value):
         self.simulation_options[key] = value
@@ -204,16 +232,19 @@ class InputScreen(MDScreen):
     def _on_calculer(self, instance):
         profil = {
             'sexe': self.sexe,
-            'poids': self.poids_input.text,
+            'poids': self.poids,
             'a_jeun': self.a_jeun
         }
         consommations = list(self.consommations)
-        # Vérification des champs obligatoires
         if not profil['poids'] or not consommations:
             from kivymd.toast import toast
             toast("Veuillez remplir le profil et ajouter au moins une consommation.")
             return
-        result_screen = self.manager.get_screen('result')
-        # Passer les options de simulation
+        try:
+            result_screen = self.manager.get_screen('result')
+        except Exception:
+            from kivymd.toast import toast
+            toast("Erreur : l'écran de résultats n'est pas disponible.")
+            return
         result_screen.afficher_resultat(profil, consommations, self.simulation_options)
         self.manager.current = 'result'
