@@ -1,0 +1,244 @@
+/* Palette Sobreak : noir, violet, vert */
+:root {
+    --sobreak-black: #181818;
+    --sobreak-violet: #7c3aed;
+    --sobreak-green: #22c55e;
+    --sobreak-violet-dark: #5b21b6;
+    --sobreak-green-dark: #15803d;
+    --sobreak-bg: #181818;
+    --sobreak-card: #232323;
+    --sobreak-text: #f5f5f5;
+    --sobreak-shadow: 0 4px 24px rgba(124,58,237,0.12);
+    --sobreak-radius: 18px;
+}
+
+body {
+    font-family: 'Inter', Arial, sans-serif;
+    background: var(--sobreak-bg);
+    margin: 0;
+    padding: 0;
+    text-align: center;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    color: var(--sobreak-text);
+    letter-spacing: 0.01em;
+    position: relative;
+    overflow-x: hidden;
+}
+
+/* Fond animé dégradé */
+body::before {
+    content: '';
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    z-index: 0;
+    background: linear-gradient(120deg, #181818 0%, #7c3aed 50%, #22c55e 100%);
+    background-size: 200% 200%;
+    animation: gradientMove 8s ease-in-out infinite;
+    opacity: 0.18;
+    pointer-events: none;
+}
+@keyframes gradientMove {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+h1 {
+    color: var(--sobreak-violet);
+    margin-top: 32px;
+    font-size: 2.2rem;
+    font-weight: 800;
+    letter-spacing: 0.02em;
+    position: relative;
+    z-index: 1;
+}
+
+p {
+    color: #bdbdbd;
+    margin: 16px 0;
+    font-size: 1.08rem;
+    position: relative;
+    z-index: 1;
+}
+
+a {
+    color: var(--sobreak-green);
+    text-decoration: none;
+    margin: 0 10px;
+    font-weight: 600;
+    transition: color 0.2s, box-shadow 0.2s;
+    border-radius: var(--sobreak-radius);
+    padding: 4px 10px;
+    outline: none;
+    position: relative;
+    z-index: 1;
+}
+a:hover, a:focus {
+    text-decoration: underline;
+    color: var(--sobreak-violet);
+    background: rgba(124,58,237,0.08);
+    box-shadow: 0 2px 8px rgba(124,58,237,0.10);
+}
+
+form {
+    background: var(--sobreak-card);
+    padding: 28px 18px 22px 18px;
+    border-radius: var(--sobreak-radius);
+    box-shadow: var(--sobreak-shadow);
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    max-width: 370px;
+    margin: 28px auto 0 auto;
+    align-items: stretch;
+    position: relative;
+    z-index: 1;
+}
+
+input, select, button, textarea {
+    font-size: 1.02rem;
+    padding: 8px 10px;
+    border-radius: 10px;
+    border: 1.5px solid #333;
+    outline: none;
+    margin-bottom: 4px;
+    background: #181818;
+    color: var(--sobreak-text);
+    transition: border 0.2s, box-shadow 0.2s;
+    box-shadow: 0 1px 4px rgba(44,62,80,0.04);
+    min-height: 44px;
+    max-height: 180px;
+}
+
+input:focus, select:focus {
+    border-color: var(--sobreak-violet);
+    box-shadow: 0 0 0 2px rgba(124,58,237,0.15);
+}
+
+button, input[type="button"], input[type="submit"] {
+    width: auto !important;
+    min-width: 60px;
+    max-width: 120px;
+    min-height: 32px;
+    max-height: 40px;
+    font-size: 0.95rem;
+    padding: 6px 10px;
+    resize: none !important;
+    box-sizing: border-box;
+    display: inline-block;
+}
+
+button {
+    background: linear-gradient(90deg, var(--sobreak-violet) 60%, var(--sobreak-green) 100%);
+    color: #fff;
+    border: none;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s, box-shadow 0.2s, transform 0.1s;
+    margin-top: 8px;
+    letter-spacing: 0.04em;
+    box-shadow: 0 2px 8px rgba(34,197,94,0.10);
+    min-width: 60px;
+    min-height: 32px;
+    max-width: 120px;
+    margin-left: auto;
+    margin-right: auto;
+    border-radius: 16px;
+    font-size: 0.95rem;
+    position: relative;
+    overflow: hidden;
+    display: inline-block;
+}
+button:hover, button:focus {
+    background: linear-gradient(90deg, var(--sobreak-green) 60%, var(--sobreak-violet) 100%);
+    color: #181818;
+    box-shadow: 0 4px 16px rgba(34,197,94,0.18);
+    transform: translateY(-2px) scale(1.04);
+    width: auto;
+    max-width: 180px;
+}
+button:active {
+    transform: scale(0.96);
+}
+
+/* Effet ripple sur les boutons (corrigé pour ne pas dépasser) */
+button::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 0;
+    height: 0;
+    background: rgba(124,58,237,0.18);
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 0;
+    pointer-events: none;
+    transition: width 0.4s cubic-bezier(.4,0,.2,1), height 0.4s cubic-bezier(.4,0,.2,1), opacity 0.3s;
+    z-index: 2;
+}
+button:active::after {
+    width: 120%;
+    height: 120%;
+    opacity: 1;
+    transition: 0s;
+}
+
+/* Dashboard et liens */
+.dashboard-links, .main-links {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin: 28px 0;
+    position: relative;
+    z-index: 1;
+}
+
+@media (min-width: 600px) {
+    .dashboard-links, .main-links {
+        flex-direction: row;
+        justify-content: center;
+    }
+    form {
+        max-width: 420px;
+    }
+}
+
+/* Messages flash */
+.flash-success {
+    color: var(--sobreak-green);
+    background: #1e2e22;
+    border: 1.5px solid var(--sobreak-green-dark);
+    padding: 12px;
+    border-radius: 12px;
+    margin: 14px auto;
+    max-width: 370px;
+    font-weight: 600;
+    box-shadow: 0 2px 8px rgba(34,197,94,0.10);
+    position: relative;
+    z-index: 2;
+}
+.flash-error {
+    color: #ff6b6b;
+    background: #2a1a1a;
+    border: 1.5px solid #b91c1c;
+    padding: 12px;
+    border-radius: 12px;
+    margin: 14px auto;
+    max-width: 370px;
+    font-weight: 600;
+    box-shadow: 0 2px 8px rgba(185,28,28,0.10);
+    position: relative;
+    z-index: 2;
+}
+
+/* Ajout d'un effet de profondeur sur les cartes */
+form, .dashboard-links, .main-links {
+    transition: box-shadow 0.2s;
+}
+form:hover, .dashboard-links:hover, .main-links:hover {
+    box-shadow: 0 8px 32px rgba(124,58,237,0.16);
+} 

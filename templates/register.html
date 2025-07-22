@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Inscription - Sobreak</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <h1>Créer un compte Sobreak</h1>
+    <form method="POST">
+        <input type="text" name="username" placeholder="Nom d'utilisateur" required><br>
+        <input type="email" name="email" placeholder="Email" required><br>
+        <input type="password" name="password" placeholder="Mot de passe" required><br>
+        <input type="date" name="date_of_birth" placeholder="Date de naissance"><br>
+        <input type="number" name="weight" placeholder="Poids (kg)" step="0.1"><br>
+        <select name="gender">
+            <option value="">Genre</option>
+            <option value="homme">Homme</option>
+            <option value="femme">Femme</option>
+            <option value="autre">Autre</option>
+        </select><br>
+        <button type="submit">S'inscrire</button>
+    </form>
+    <p>Déjà un compte ? <a href="/login">Se connecter</a></p>
+</body>
+</html> 

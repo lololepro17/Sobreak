@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Ajouter une consommation - Sobreak</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <h1>Ajouter une consommation</h1>
+    <form method="POST" id="drink-form">
+        <label for="drink_id">Boisson :</label>
+        <div style="display: flex; align-items: center; gap: 8px; justify-content: center;">
+            <select name="drink_id" id="drink_id">
+                <option value="">-- Choisir une boisson --</option>
+                {% for drink in drinks %}
+                    <option value="{{ drink.id }}">{{ drink.name }} ({{ drink.alcohol_percentage }}% - {{ drink.volume_ml }}ml)</option>
+                {% endfor %}
+            </select>
+            <button type="button" id="show-custom-drink" class="custom-btn">+ Boisson perso</button>
+        </div>
+        <div id="custom-drink-fields" style="display:none; margin-top:10px;">
+            <input type="text" name="custom_drink_name" id="custom_drink_name" placeholder="Nom de la boisson">
+            <input type="number" name="custom_alcohol_percentage" id="custom_alcohol_percentage" placeholder="Degrés (%)" min="0" max="100" step="0.1">
+            <input type="number" name="custom_volume_ml" id="custom_volume_ml" placeholder="Volume (ml)" min="1" step="1">
+        </div>
+        <input type="number" name="quantity" placeholder="Quantité (nombre de verres)" min="1" required>
+        <!-- Sélecteur custom date/heure -->
+        <div id="custom-datetime-picker" style="margin: 18px 0; display: flex; flex-direction: column; align-items: center; gap: 8px;">
+            <div style="display: flex; align-items: center; gap: 12px;">
+                <button type="button" class="custom-btn" id="day-minus">-</button>
+                <span id="date-display" style="min-width: 90px; font-weight: bold; font-size: 1.1em;"></span>
+                <button type="button" class="custom-btn" id="day-plus">+</button>
+            </div>
+            <div style="display: flex; align-items: center; gap: 12px;">
+                <button type="button" class="custom-btn" id="hour-minus">-</button>
+                <span id="hour-display" style="min-width: 30px;"></span> :
+                <button type="button" class="custom-btn" id="minute-minus">-</button>
+                <span id="minute-display" style="min-width: 30px;"></span>
+                <button type="button" class="custom-btn" id="minute-plus">+</button>
+                <button type="button" class="custom-btn" id="hour-plus">+</button>
+            </div>
+        </div>
+        <input type="hidden" name="consumed_at" id="consumed_at_hidden">
+        <textarea name="notes" placeholder="Notes (optionnel)"></textarea>
+        <button type="submit">Ajouter</button>
+    </form>
+    <br>
+    <a href="/dashboard">Retour au dashboard</a>
+    <script>
+    const showBtn = document.getElementById('show-custom-drink');
+    const customFields = document.getElementById('custom-drink-fields');
+    const drinkSelect = document.getElementById('drink_id');
+    showBtn.addEventListener('click', function() {
+        if (customFields.style.display === 'none') {
+            customFields.style.display = 'block';
+            drinkSelect.value = '';
+            drinkSelect.disabled = true;
+            showBtn.textContent = 'Annuler';
+        } else {
+            customFields.style.display = 'none';
+            drinkSelect.disabled = false;
+            showBtn.textContent = '+ Boisson perso';
+            document.getElementById('custom_drink_name').value = '';
+            document.getElementById('custom_alcohol_percentage').value = '';
+            document.getElementById('custom_volume_ml').value = '';
+        }
+    });
+    // Date picker custom
+    function pad(n) { return n < 10 ? '0'+n : n; }
+    const now = new Date();
+    let selected = new Date(now.getFullYear(), now.getMonth(), now.getDate(), now.getHours(), now.getMinutes(), 0, 0);
+    function updateDisplay() {
+        document.getElementById('date-display').textContent = pad(selected.getDate()) + '/' + pad(selected.getMonth()+1);
+        document.getElementById('hour-display').textContent = pad(selected.getHours());
+        document.getElementById('minute-display').textContent = pad(selected.getMinutes());
+        // Format YYYY-MM-DDTHH:MM
+        document.getElementById('consumed_at_hidden').value = selected.getFullYear() + '-' + pad(selected.getMonth()+1) + '-' + pad(selected.getDate()) + 'T' + pad(selected.getHours()) + ':' + pad(selected.getMinutes());
+    }
+    document.getElementById('day-minus').onclick = function() {
+        selected.setDate(selected.getDate() - 1); updateDisplay(); };
+    document.getElementById('day-plus').onclick = function() {
+        selected.setDate(selected.getDate() + 1); updateDisplay(); };
+    document.getElementById('hour-minus').onclick = function() {
+        selected.setHours(selected.getHours() - 1); updateDisplay(); };
+    document.getElementById('hour-plus').onclick = function() {
+        selected.setHours(selected.getHours() + 1); updateDisplay(); };
+    document.getElementById('minute-minus').onclick = function() {
+        selected.setMinutes(selected.getMinutes() - 1); updateDisplay(); };
+    document.getElementById('minute-plus').onclick = function() {
+        selected.setMinutes(selected.getMinutes() + 1); updateDisplay(); };
+    updateDisplay();
+    </script>
+</body>
+</html> 

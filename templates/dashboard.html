@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Mon tableau de bord - Sobreak</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <h1>Bienvenue, {{ user.username }} !</h1>
+    <p>Voici ton tableau de bord Sobreak.</p>
+    <div style="margin: 18px 0;">
+        {% if bac is not none %}
+            {% set bac_color = '#ff6b6b' if bac > 0.5 else '#f1c40f' if bac > 0.2 else '#22c55e' %}
+            <strong>Taux d'alcool estimé : </strong>
+            <span style='color: {{ bac_color }}; font-size:1.2em;'>{{ bac }} g/L</span>
+            {% if bac == 0 %}
+                <span style="color:#22c55e;">(Sobre)</span>
+            {% elif bac < 0.5 %}
+                <span style="color:#f1c40f;">(Attention)</span>
+            {% else %}
+                <span style="color:#ff6b6b;">(Alcoolisé)</span>
+            {% endif %}
+        {% else %}
+            <span style="color:#aaa;">Renseigne ton poids et ton genre pour le calcul !</span>
+        {% endif %}
+    </div>
+    <a href="/logout">Se déconnecter</a>
+    <br><br>
+    <a href="/add_drink">Ajouter une consommation</a>
+    <br><br>
+    <h2>Historique des consommations</h2>
+    {% if consommations %}
+        <ul style="list-style:none;padding:0;max-width:400px;margin:0 auto;">
+        {% for c in consommations %}
+            <li style="background:#232323;margin-bottom:10px;padding:10px 12px;border-radius:12px;box-shadow:0 1px 4px rgba(44,62,80,0.04);text-align:left;display:flex;align-items:center;justify-content:space-between;gap:8px;">
+                <div>
+                    <strong>{{ c.consumed_at.strftime('%d/%m %H:%M') }}</strong> :
+                    {% if c.drink_id and c.drink %}
+                        {{ c.drink.name }} ({{ c.drink.alcohol_percentage }}% - {{ c.drink.volume_ml }}ml)
+                    {% elif c.custom_drink_name %}
+                        {{ c.custom_drink_name }}
+                    {% else %}
+                        Boisson inconnue
+                    {% endif %}
+                    x{{ c.quantity }}
+                    {% if c.notes %}<br><em style="color:#aaa;">{{ c.notes }}</em>{% endif %}
+                </div>
+                <form method="POST" action="/delete_drink/{{ c.id }}" style="margin:0;display:inline;">
+                    <button type="submit" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette consommation ?');" style="background:none;border:none;color:#aaa;width:auto;height:auto;min-width:unset;max-width:unset;min-height:unset;max-height:unset;padding:0;font-size:1.1em;line-height:1;display:inline;align-items:center;justify-content:center;cursor:pointer;">&#10005;</button>
+                </form>
+            </li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p style="color:#aaa;">Aucune consommation enregistrée.</p>
+    {% endif %}
+    <br>
+    <a href="/">Retour à l'accueil</a>
+</body>
+</html> 

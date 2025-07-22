@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Sobreak - Accueil</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <h1>Bienvenue sur Sobreak</h1>
+    <p>L'application pour suivre votre sobriété.</p>
+    {% if current_user.is_authenticated %}
+        <a href="/dashboard">Mon tableau de bord</a> | <a href="/logout">Se déconnecter</a>
+    {% else %}
+        <a href="/login">Se connecter</a> | <a href="/register">Créer un compte</a>
+    {% endif %}
+</body>
+</html> 
